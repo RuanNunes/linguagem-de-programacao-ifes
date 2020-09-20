@@ -1,5 +1,5 @@
 package com.medico.model;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 import javax.validation.constraints.Size;
@@ -9,6 +9,7 @@ import io.quarkus.mongodb.panache.PanacheMongoEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /***
  * @author ruannunes
@@ -17,6 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 @MongoEntity(collection = "doctor")
 public class Doctor extends PanacheMongoEntity {
     @Size(max = 100, min = 2)
@@ -24,38 +26,42 @@ public class Doctor extends PanacheMongoEntity {
 
     @Size(max = 250, min = 3)
     private String name;
-
-    private Date dateOfBirth;
     
-    @Size(max = 100, min = 0)
     private Integer serviceTime;
     
     @Size(max = 250, min = 3)
     private String specialization;
     
-    @Size(max = 100, min = 0)
     private Integer specializationServiceTime;
     
     private Boolean retired;
 
     @Schema(readOnly = true)
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
     @Schema(readOnly = true)
-    private LocalDate lastUpdate;
+    private LocalDateTime lastUpdate;
 
     public void updateDoctorData(final Doctor newDoctor){
-
+        this.description = newDoctor.description;
+        this.name = newDoctor.name;
+        this.serviceTime = newDoctor.serviceTime;
+        this.specialization = newDoctor.specialization;
+        this.specializationServiceTime = newDoctor.specializationServiceTime;
+        this.retired = newDoctor.retired;
+        this.createdAt = newDoctor.createdAt;
+        this.lastUpdate = LocalDateTime.now();
+        
     }
 
-    public static Doctor findById(UUID id) {
-        return find("id", id).firstResult();
-    }
+    // public static Doctor findById(UUID id) {
+    //     return find("id", id).firstResult();
+    // }
 
     public static Boolean exists(Doctor entity) {
         return find("name = ?1", entity.getName()).count() > 0 ? true : false;
     }
 
-    public static Boolean exists(Doctor entity, UUID id) {
+    public static Boolean exists(Doctor entity, String id) {
         return find("name = ?1 AND id <> ?2", entity.getName(), id).count() > 0 ? true : false;
     }
 }

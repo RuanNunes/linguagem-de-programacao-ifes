@@ -5,6 +5,11 @@ import javax.swing.JOptionPane;
 
 import model.MedicoPediatra;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -16,17 +21,11 @@ import model.MedicoPediatra;
  */
 public class TelaCadastroMedico extends javax.swing.JInternalFrame {
 
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-	/**
-     * Creates new form Tela de Cadastro Medico
-     */
+
     public TelaCadastroMedico() {
         initComponents();
     }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -169,9 +168,22 @@ public class TelaCadastroMedico extends javax.swing.JInternalFrame {
         	obj.setTempoDeServico(Integer.parseInt(jTextFieldTempoServico.getText()));
         	obj.setTempoDeServicoComExpecializacao(Integer.parseInt(jTextFieldTempoServicoEsp.getText()));
         	obj.setExpecializacao(jTextFieldEspecialização.getText());
-            
-//            TelaPrincipal.vetor[TelaPrincipal.qtdMedicos] = obj;
-//            TelaPrincipal.qtdMedicos = TelaPrincipal.qtdMedicos + 1;
+
+//        	URL url = new URL("http://localhost:8080/musicApp/banda/get");
+//            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+//
+//            if (con.getResponseCode() != HTTP_COD_SUCESSO) {
+//                throw new RuntimeException("HTTP error code : "+ con.getResponseCode());
+//            }
+//
+//            BufferedReader br = new BufferedReader(new InputStreamReader((con.getInputStream())));
+//
+//            JAXBContext jaxbContext = JAXBContext.newInstance(Banda.class);
+//
+//            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+//            Banda banda = (Banda) jaxbUnmarshaller.unmarshal(br);
+            TelaPrincipal.vetor[TelaPrincipal.qtdMedicos] = obj;
+            TelaPrincipal.qtdMedicos = TelaPrincipal.qtdMedicos + 1;
             //TODO
             //fazer chamada para api rest de medicos
 

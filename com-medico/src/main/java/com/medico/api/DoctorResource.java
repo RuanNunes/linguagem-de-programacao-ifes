@@ -1,4 +1,5 @@
 package com.medico.api;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,6 +20,7 @@ import javax.ws.rs.core.Response.Status;
 
 import com.medico.model.Doctor;
 
+import org.bson.types.ObjectId;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -42,8 +44,8 @@ public class DoctorResource {
     @APIResponse(responseCode = "200")
     @APIResponse(responseCode = "404", description = "Doctor not found")
     @Operation(summary = "Find Doctor by ID")
-    public Doctor getSindle(@PathParam("id") UUID id) {
-        Doctor entity = Doctor.findById(id);
+    public Doctor getSindle(@PathParam("id") String id) {
+        Doctor entity = Doctor.findById(new ObjectId(id));
 
         if (entity == null) {
             throw new WebApplicationException("Doctor not found", Status.NOT_FOUND);
@@ -69,7 +71,8 @@ public class DoctorResource {
         if (Doctor.exists(entity)) {
             return Response.status(Status.CONFLICT).build();
         }
-
+        entity.setCreatedAt(LocalDateTime.now());
+        entity.setLastUpdate(LocalDateTime.now());
         entity.persist();
 
         return Response.ok(entity).status(Status.CREATED).build();
@@ -84,8 +87,8 @@ public class DoctorResource {
     @APIResponse(responseCode = "404", description = "Doctor not found")
     @APIResponse(responseCode = "409", description = "Doctor already exists")
     @Operation(summary = "Edit Doctor by ID")
-    public Response update(@PathParam("id") UUID id, @Valid Doctor newEntity) {
-        Doctor entity = Doctor.findById(id);
+    public Response update(@PathParam("id") String id, @Valid Doctor newEntity) {
+        Doctor entity = Doctor.findById(new ObjectId(id));
 
         if (entity == null) 
             throw new WebApplicationException("Doctor not found", Status.NOT_FOUND);
@@ -104,8 +107,8 @@ public class DoctorResource {
     @APIResponse(responseCode = "204", description = "Doctor deleted")
     @APIResponse(responseCode = "404", description = "Doctor not found")
     @Operation(summary = "Delete Doctor by ID")
-    public Response delete(@PathParam("id") UUID id) {
-        Doctor entity = Doctor.findById(id);
+    public Response delete(@PathParam("id") String id) {
+        Doctor entity = Doctor.findById(new ObjectId(id));
 
         if (entity == null) {
             throw new WebApplicationException("Doctor not found", Status.NOT_FOUND);
