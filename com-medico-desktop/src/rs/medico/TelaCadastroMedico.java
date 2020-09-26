@@ -1,15 +1,10 @@
 package rs.medico;
 
-
 import javax.swing.JOptionPane;
-
 import model.MedicoPediatra;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
+import rs.json.JSONArray;
+import rs.json.JSONObject;
+import rs.rest.REST;
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -159,6 +154,8 @@ public class TelaCadastroMedico extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+
+
     private void jButtonCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCadastrarActionPerformed
         MedicoPediatra obj = new MedicoPediatra();
         
@@ -169,36 +166,38 @@ public class TelaCadastroMedico extends javax.swing.JInternalFrame {
         	obj.setTempoDeServicoComExpecializacao(Integer.parseInt(jTextFieldTempoServicoEsp.getText()));
         	obj.setExpecializacao(jTextFieldEspecialização.getText());
 
-//        	URL url = new URL("http://localhost:8080/musicApp/banda/get");
-//            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-//
-//            if (con.getResponseCode() != HTTP_COD_SUCESSO) {
-//                throw new RuntimeException("HTTP error code : "+ con.getResponseCode());
-//            }
-//
-//            BufferedReader br = new BufferedReader(new InputStreamReader((con.getInputStream())));
-//
-//            JAXBContext jaxbContext = JAXBContext.newInstance(Banda.class);
-//
-//            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-//            Banda banda = (Banda) jaxbUnmarshaller.unmarshal(br);
-            TelaPrincipal.vetor[TelaPrincipal.qtdMedicos] = obj;
-            TelaPrincipal.qtdMedicos = TelaPrincipal.qtdMedicos + 1;
-            //TODO
-            //fazer chamada para api rest de medicos
+            final JSONObject reqObj= new JSONObject();
+            reqObj.put("name", obj.getNome());
+            reqObj.put("serviceTime", obj.getTempoDeServico());
+            reqObj.put("specialization", obj.getExpecializacao());
+            reqObj.put("specializationServiceTime", obj.getTempoDeServicoComExpecializacao());
+            reqObj.put("retired", obj.isAposentado());
 
-            
-            JOptionPane.showMessageDialog(this, "Cadastro de Médico realizado com sucesso!");
+
+            final String APIUrl=  "http://localhost:8080/api/doctors/v1/";
+            String response= REST.POST(APIUrl, reqObj.toString());
+
+            //TODO teste para inserir varios registros
+//            final JSONArray jsonArrayMedicos = new JSONArray();
+//            for (int i = 0; i <= 1200; i++){
+//                final JSONObject reqObj2= new JSONObject();
+//                reqObj2.put("name", obj.getNome() + i);
+//                reqObj2.put("serviceTime", obj.getTempoDeServico());
+//                reqObj2.put("specialization", obj.getExpecializacao());
+//                reqObj2.put("specializationServiceTime", obj.getTempoDeServicoComExpecializacao());
+//                reqObj2.put("retired", obj.isAposentado());
+//                jsonArrayMedicos.put(reqObj2);
+//            }
+//            for (int i = 0; i <= 10; i++) {
+//                String response2 = REST.POST(APIUrl + "create-all", jsonArrayMedicos.toString());
+//            }
+            JOptionPane.showMessageDialog(this, "todos Cadastro de Médico realizado com sucesso!");
             this.dispose();
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, "Campo Idade não aceita letrar e nem caractere especial.\n"
 												+ "Campo Tempo de Serviço não aceita letrar e nem caractere especial. \n"
 												+ "Campo Tempo de Serviço com expecialização não aceita letrar e nem caractere especial.");
 		}
- 
-		
-        
-        
     }//GEN-LAST:event_jButtonCadastrarActionPerformed
 
     private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed

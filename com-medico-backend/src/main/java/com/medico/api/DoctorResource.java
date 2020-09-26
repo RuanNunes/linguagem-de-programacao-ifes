@@ -1,8 +1,7 @@
 package com.medico.api;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -74,6 +73,29 @@ public class DoctorResource {
         entity.setCreatedAt(LocalDateTime.now());
         entity.setLastUpdate(LocalDateTime.now());
         entity.persist();
+
+        return Response.ok(entity).status(Status.CREATED).build();
+    }
+
+    @POST
+    @Path("/create-all")
+    @Transactional
+    @APIResponse(responseCode = "201",
+            description = "resources created",
+            content = @Content(schema = @Schema(implementation = Doctor.class)))
+    @APIResponse(responseCode = "406", description = "Invalid data")
+    @APIResponse(responseCode = "409", description = "Doctor already exists")
+    @Operation(summary = "Create new Doctors")
+    public Response createAll(@Valid ArrayList<Doctor> entity) {
+        final List<Doctor> doctors = new ArrayList<>();
+
+        entity.forEach(doctor -> {
+            doctor.setCreatedAt(LocalDateTime.now());
+            doctor.setLastUpdate(LocalDateTime.now());
+            doctors.add(doctor);
+        });
+        
+        Doctor.persist(doctors);
 
         return Response.ok(entity).status(Status.CREATED).build();
     }

@@ -3,7 +3,16 @@ package rs.medico;
 
 import javax.swing.table.DefaultTableModel;
 
+import com.sun.source.tree.MethodInvocationTree;
+import com.sun.source.tree.NewArrayTree;
 import model.MedicoPediatra;
+import rs.json.JSONArray;
+import rs.json.JSONObject;
+import rs.rest.REST;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /*
  * To change this template, choose Tools | Templates
@@ -25,21 +34,45 @@ public class TelaListagemMedicos extends javax.swing.JInternalFrame {
     
     public TelaListagemMedicos() {
         initComponents();
-        
         DefaultTableModel modelo = (DefaultTableModel) this.jTableMedicos.getModel();
-        
-        for(int i=0; i < TelaPrincipal.qtdMedicos; i++){
-            MedicoPediatra obj = new MedicoPediatra();
-            obj = TelaPrincipal.vetor[i];
-            
+        final String url = "http://localhost:8080/api/doctors/v1/";
+        final String getAllDoctors = REST.GET(url);
+        final JSONArray jsonArray = new JSONArray(getAllDoctors);
+        final List<MedicoPediatra> medicoPediatraList = new ArrayList<>();
+
+        jsonArray.forEach(json -> {
+            final JSONObject jsonObject = new JSONObject(json.toString());
+            final MedicoPediatra medico = new MedicoPediatra();
+            medico.setNome(jsonObject.getString("name"));
+            medico.setExpecializacao(jsonObject.getString("specialization"));
+            medico.setTempoDeServicoComExpecializacao(jsonObject.getInt("specializationServiceTime"));
+            medico.setTempoDeServico(jsonObject.getInt("serviceTime"));
+            medico.setAposentado(jsonObject.getBoolean("retired"));
+            medicoPediatraList.add(medico);
+        });
+
+        medicoPediatraList.forEach(obj -> {
             String nome = obj.getNome();
             String idade = String.valueOf(obj.getIdade());
             String tempoServico = String.valueOf(obj.getTempoDeServico());
             String tempoServicoEspe = String.valueOf(obj.getTempoDeServicoComExpecializacao());
             String Especializacao = obj.getExpecializacao();
-            
+
             modelo.addRow(new String[]{nome, idade, tempoServico, tempoServicoEspe, Especializacao});
-        }
+        });
+
+//        for(int i=0; i < TelaPrincipal.qtdMedicos; i++){
+//            MedicoPediatra obj = new MedicoPediatra();
+//            obj = TelaPrincipal.vetor[i];
+//
+//            String nome = obj.getNome();
+//            String idade = String.valueOf(obj.getIdade());
+//            String tempoServico = String.valueOf(obj.getTempoDeServico());
+//            String tempoServicoEspe = String.valueOf(obj.getTempoDeServicoComExpecializacao());
+//            String Especializacao = obj.getExpecializacao();
+//
+//            modelo.addRow(new String[]{nome, idade, tempoServico, tempoServicoEspe, Especializacao});
+//        }
     }
 
     /**

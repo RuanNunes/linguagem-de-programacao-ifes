@@ -1,7 +1,5 @@
 package com.medico.model;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.UUID;
 import javax.validation.constraints.Size;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import io.quarkus.mongodb.panache.MongoEntity;
@@ -52,10 +50,6 @@ public class Doctor extends PanacheMongoEntity {
         this.lastUpdate = LocalDateTime.now();
         
     }
-
-    // public static Doctor findById(UUID id) {
-    //     return find("id", id).firstResult();
-    // }
 
     public static Boolean exists(Doctor entity) {
         return find("name = ?1", entity.getName()).count() > 0 ? true : false;
