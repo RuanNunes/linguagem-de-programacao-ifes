@@ -12,7 +12,7 @@ import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import javax.websocket.Session;
 
-@ServerEndpoint("/medico/{username}")
+@ServerEndpoint("/chat/{username}")
 @ApplicationScoped
 public class ChatSocket {
 
